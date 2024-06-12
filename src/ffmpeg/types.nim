@@ -2854,7 +2854,6 @@ type
   
   SwsContext* {.swscaleStruct.} = object
 
-# when FF_API_INIT_PACKET:
-#   type AVPacketList* {.packet, acyclic.} = object
-#     pkt*: AVPacket
-#     next*: ptr AVPacketList
+  AVPacketList* {.packet, acyclic.} = object
+    pkt*: AVPacket
+    next*: ptr AVPacketList
