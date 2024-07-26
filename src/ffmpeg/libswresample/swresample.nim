@@ -1,4 +1,4 @@
-from ../types import AVClass, AVSampleFormat, AVMatrixEncoding, AVFrame, SwrContext
+from ../types import AVChannelLayout, AVClass, AVSampleFormat, AVMatrixEncoding, AVFrame, SwrContext
 
 const
   SWR_FLAG_RESAMPLE* = 1
@@ -14,7 +14,7 @@ proc swr_get_class* (): ptr AVClass
 proc swr_alloc* (): ptr SwrContext
 proc swr_init* (s: ptr SwrContext): cint
 proc swr_is_initialized* (s: ptr SwrContext): cint
-proc swr_alloc_set_opts* (s: ptr SwrContext, out_ch_layout: int64, out_sample_fmt: AVSampleFormat, out_sample_rate: cint, in_ch_layout: int64, in_sample_fmt: AVSampleFormat, in_sample_rate, log_offset: cint, log_ctx: pointer): ptr SwrContext
+proc swr_alloc_set_opts2* (s: ptr ptr SwrContext, out_ch_layout: AVChannelLayout, out_sample_fmt: AVSampleFormat, out_sample_rate: cint, in_ch_layout: AVChannelLayout, in_sample_fmt: AVSampleFormat, in_sample_rate, log_offset: cint, log_ctx: pointer): cint
 proc swr_free* (s: ptr ptr SwrContext)
 proc swr_close* (s: ptr SwrContext)
 proc swr_convert* (s: ptr SwrContext, `out`: ptr ptr uint8, out_count: cint, `in`: ptr ptr uint8, in_count: cint): cint

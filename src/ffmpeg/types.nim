@@ -245,8 +245,7 @@ type
     frame_number*: cint
     block_align*: cint
     cutoff*: cint
-    channel_layout*: uint64
-    request_channel_layout*: uint64
+    ch_layout*: AVChannelLayout
     audio_service_type*: AVAudioServiceType
     request_sample_fmt*: AVSampleFormat
     get_buffer2*: proc (s: ptr AVCodecContext, frame: ptr AVFrame, flags: cint): cint {.cdecl.}
@@ -505,7 +504,48 @@ type
     props*: cint
     mime_types*: cstringArray
     profiles*: ptr AVProfile
-
+  AVChannel* {.size: sizeof(cint).} = enum
+      AV_CHAN_NONE = -1, AV_CHAN_FRONT_LEFT, AV_CHAN_FRONT_RIGHT, AV_CHAN_FRONT_CENTER,
+      AV_CHAN_LOW_FREQUENCY, AV_CHAN_BACK_LEFT, AV_CHAN_BACK_RIGHT,
+      AV_CHAN_FRONT_LEFT_OF_CENTER, AV_CHAN_FRONT_RIGHT_OF_CENTER,
+      AV_CHAN_BACK_CENTER, AV_CHAN_SIDE_LEFT, AV_CHAN_SIDE_RIGHT, AV_CHAN_TOP_CENTER,
+      AV_CHAN_TOP_FRONT_LEFT, AV_CHAN_TOP_FRONT_CENTER, AV_CHAN_TOP_FRONT_RIGHT,
+      AV_CHAN_TOP_BACK_LEFT, AV_CHAN_TOP_BACK_CENTER, AV_CHAN_TOP_BACK_RIGHT,
+      AV_CHAN_STEREO_LEFT = 29,
+      AV_CHAN_STEREO_RIGHT, AV_CHAN_WIDE_LEFT, AV_CHAN_WIDE_RIGHT,
+      AV_CHAN_SURROUND_DIRECT_LEFT, AV_CHAN_SURROUND_DIRECT_RIGHT,
+      AV_CHAN_LOW_FREQUENCY_2, AV_CHAN_TOP_SIDE_LEFT, AV_CHAN_TOP_SIDE_RIGHT,
+      AV_CHAN_BOTTOM_FRONT_CENTER, AV_CHAN_BOTTOM_FRONT_LEFT,
+      AV_CHAN_BOTTOM_FRONT_RIGHT, AV_CHAN_SIDE_SURROUND_LEFT,
+      AV_CHAN_SIDE_SURROUND_RIGHT,
+      AV_CHAN_TOP_SURROUND_LEFT,
+      AV_CHAN_TOP_SURROUND_RIGHT,
+      AV_CHAN_UNUSED = 0x200,
+      AV_CHAN_UNKNOWN = 0x300,
+      AV_CHAN_AMBISONIC_BASE = 0x400,
+      AV_CHAN_AMBISONIC_END = 0x7ff
+  AVChannelOrder* {.size: sizeof(cint).} = enum
+    AV_CHANNEL_ORDER_UNSPEC,
+    AV_CHANNEL_ORDER_NATIVE,
+    AV_CHANNEL_ORDER_CUSTOM,
+    AV_CHANNEL_ORDER_AMBISONIC,
+    FF_CHANNEL_ORDER_NB
+  AVMatrixEncoding* {.size: sizeof(cint).} = enum
+    AV_MATRIX_ENCODING_NONE, AV_MATRIX_ENCODING_DOLBY, AV_MATRIX_ENCODING_DPLII,
+    AV_MATRIX_ENCODING_DPLIIX, AV_MATRIX_ENCODING_DPLIIZ,
+    AV_MATRIX_ENCODING_DOLBYEX, AV_MATRIX_ENCODING_DOLBYHEADPHONE,
+    AV_MATRIX_ENCODING_NB
+  AVChannelCustom* {.importc: "AVChannelCustom", header: "channel_layout.h", bycopy.} = object
+    id* {.importc: "id".}: AVChannel
+    name* {.importc: "name".}: array[16, char]
+    opaque* {.importc: "opaque".}: pointer
+  INNER_C_UNION_channel_layout_1* {.importc: "AVChannelLayout::no_name",
+                                   header: "channel_layout.h", bycopy, union.} = object
+  AVChannelLayout* {.importc: "AVChannelLayout", header: "channel_layout.h", bycopy.} = object
+    order* {.importc: "order".}: AVChannelOrder
+    nb_channels* {.importc: "nb_channels".}: cint
+    u* {.importc: "u".}: INNER_C_UNION_channel_layout_1
+    opaque* {.importc: "opaque".}: pointer
   AVCodecID* {.codecIdEnum, size: sizeof(cint).} = enum
     AV_CODEC_ID_NONE
     AV_CODEC_ID_MPEG1VIDEO
